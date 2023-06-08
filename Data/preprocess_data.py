@@ -41,16 +41,33 @@ stock_zh_a_daily:
 
 """
 
+def get_parser():
+    parser = argparse.ArgumentParser(description="preprocess parser")
+    parser.add_argument('--start_date', default="", type=str)
+    parser.add_argument('--end_date', default="", type=str)
+    parser.add_argument('--data_frequency', default="daily")
+    parser.add_argument('--data_save_path', default="/home/zzz/StockDaily")
+    args = parser.parse_args()
+    return args
+
 # Get stock symbol and get daily data
-stock_zh_a_spot_em = akshare.stock_zh_a_spot_em()
-all_symbol_list = stock_zh_a_spot_em["代码"]
-for symbol in all_symbol_list:
-    print(symbol)
-    data = akshare.stock_zh_a_hist(
-        symbol=symbol,
-        period="daily",
-        start_date="20150101",
-        end_date="20210907",
-        adjust="",
-    )
-    print(data.shape)
+def get_daily_data(
+    args: argparse.ArgumentParser = None,
+):
+    stock_zh_a_spot_em = akshare.stock_zh_a_spot_em()
+    all_symbol_list = stock_zh_a_spot_em["代码"]
+    for symbol in all_symbol_list:
+        print(symbol)
+        data = akshare.stock_zh_a_hist(
+            symbol=symbol,
+            period=args.data_frequency,
+            start_date=args.start_date,
+            end_date=args.end_date,
+            adjust="",
+        )
+        
+
+if __name__ == "__main__":
+    args = get_parser()
+    get_daily_data(args=args)
+
